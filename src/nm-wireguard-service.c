@@ -266,7 +266,7 @@ ip4_to_gvariant (const char *str)
 	// strip the port and subnet
 	tmp = g_strsplit(str, "/", 0);
 	tmp2 = g_strsplit(tmp[0], ":", 0);
-	addr = g_strdup(tmp[0]);
+	addr = g_strdup(tmp2[0]);
 
 	if (inet_pton (AF_INET, addr, &temp_addr) <= 0){
 		res = NULL;;
@@ -398,6 +398,11 @@ set_config(NMVpnServicePlugin *plugin, NMConnection *connection)
 
 	setting = get_setting(s_vpn, NM_WG_KEY_ENDPOINT);
 	if(setting){
+		val = ip4_to_gvariant(setting);
+		if(val){
+			g_variant_builder_add(&builder, "{sv}", NM_VPN_PLUGIN_CONFIG_EXT_GATEWAY, val);
+		}
+
 		// TODO
 	}
 
